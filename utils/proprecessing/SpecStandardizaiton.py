@@ -26,4 +26,4 @@ def normalize_spectra(df, elements_all):
 if __name__ == "__main__":
     elements_all = resampled_df['Elements'].explode().unique()
     standardized_df = normalize_spectra(resampled_df, elements_all)
-    standardized_df.to_json('data_moreProperties.json')
+    standardized_df.to_json('data.json')
