@@ -65,4 +65,3 @@ if __name__ == '__main__':
     )
     cleaned_df = DelErrorRow(final_df)
     resampled_df = InterpolateAndResample(cleaned_df)
-    resampled_df.to_json('newSpec.json')
