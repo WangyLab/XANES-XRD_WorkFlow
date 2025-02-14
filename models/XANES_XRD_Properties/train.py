@@ -100,7 +100,7 @@ if __name__ == '__main__':
     
     If you want to train for classification tasks, you need to change:
     1. data_loader, make the target index mapping
-    2.net, change the out_dim of FinalRegressor
+    2. net, change the out_dim of FinalRegressor
     3. train_model, change the evaluation index
     '''
     
