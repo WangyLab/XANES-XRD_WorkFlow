@@ -8,7 +8,6 @@ def calculate_xrd_for_material(doc):
     material_id = doc.material_id
     structure = doc.structure
 
-    # 初始化 XRD 计算器并计算 XRD 模式
     xrd_calculator = XRDCalculator()
     xrd_pattern = xrd_calculator.get_pattern(structure)
     xrd_x = xrd_pattern.x.tolist()
@@ -50,5 +49,4 @@ if __name__ == "__main__":
     df = pd.read_json(data_json)
     material_ids = df['material_id'].tolist()
 
-    # 调用主函数
     fetch_and_calculate_xrd(api_key, material_ids, output_file)

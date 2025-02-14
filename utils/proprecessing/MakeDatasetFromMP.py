@@ -4,9 +4,9 @@ from emmet.core.summary import HasProps
 
 API_Key = "This is API key"
 with MPRester(API_Key) as mpr:
-    docs_properties = mpr.summary.search(has_props=[HasProps.xas], fields=["material_id", "formula_pretty", "formula_anonymous", "density", # screened materials' ids
-                                                    "is_stable", "energy_above_hull", "formation_energy_per_atom", # Thermodynamic Stability
-                                                    "band_gap", "is_gap_direct",  # Electronic Structure
+    docs_properties = mpr.summary.search(has_props=[HasProps.xas], fields=["material_id", "formula_pretty", "formula_anonymous", "density",
+                                                    "is_stable", "energy_above_hull", "formation_energy_per_atom"
+                                                    "band_gap", "is_gap_direct"  # Electronic Structure
                                                     "ordering", "total_magnetization", "is_magnetic",
                                                     'nelements', 'composition', 'composition_reduced', 'volume', 'density_atomic', 'chemsys',
                                                     'symmetry', 'structure', 'energy_per_atom',
