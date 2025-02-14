@@ -93,8 +93,19 @@ def train_model(model, train_loader, val_loader, test_loader, criterion, optimiz
 
 
 if __name__ == '__main__':
+    '''
+    Regression: 'E_Formation', 'efermi', 'Density', 'BandGap' (control bandgap>0.5).
+    Classification: 'BandGap' (conductor: bandgap=0, non-conductor: bandgap>0), 'isGapDirect', 'isMagnetic', 'Ordering'.
+    In the classification task, the first three are two-category classification, and the last one is four-catefory.
+    
+    If you want to train for classification tasks, you need to change:
+    1. data_loader, make the target index mapping
+    2.net, change the out_dim of FinalRegressor
+    3. train_model, change the evaluation index
+    '''
+    
     df = load_and_filter_data('data.json')
-    target_name = 'E_Formation'  # regression: 'E_Formation', 'efermi', 'Density', 'BandGap'
+    target_name = 'E_Formation'
     TMElements_info, NotTMElements_info, padded_ySpec, targets, TMLength_max, NotTMLength_max = preprocess_data(df, target_name)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dataset = MyDataset(TMElements_info, NotTMElements_info, padded_ySpec, targets)
