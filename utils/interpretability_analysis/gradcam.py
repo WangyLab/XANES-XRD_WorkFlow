@@ -77,17 +77,17 @@ def compute_1d_gradcam(model,
     return gradcam_maps
 
 
-def gradcam_demo(model, test_loader):
+def gradcam_demo(model, test_loader, a):
     batch = next(iter(test_loader))
     (ySpec, TMElements, NotTMElements, targets, 
      ySpec_mask, TMElements_mask, NotTMElements_mask) = batch
 
-    single_ySpec = ySpec[a1:a2].to(device)
-    single_ySpec_mask = ySpec_mask[a1:a2].to(device)
-    single_TMElements = TMElements[a1:a2].to(device)
-    single_TMElements_mask = TMElements_mask[a1:a2].to(device)
-    single_NotTMElements = NotTMElements[a1:a2].to(device)
-    single_NotTMElements_mask = NotTMElements_mask[a1:a2].to(device)
+    single_ySpec = ySpec[a].to(device)
+    single_ySpec_mask = ySpec_mask[a].to(device)
+    single_TMElements = TMElements[a].to(device)
+    single_TMElements_mask = TMElements_mask[a].to(device)
+    single_NotTMElements = NotTMElements[a].to(device)
+    single_NotTMElements_mask = NotTMElements_mask[a].to(device)
 
     target_layer = model.xanes_extractor.branch1_conv2
     
@@ -122,4 +122,4 @@ if __name__ == '__main__':
     criterion = nn.L1Loss()
     checkpoint_path = "checkpoints/XANES_XRD/formation.pth"
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
-    gradcam_demo(model, test_loader)
+    gradcam_demo(model, test_loader, 0)   # a = any index
