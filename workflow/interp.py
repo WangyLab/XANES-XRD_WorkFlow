@@ -44,5 +44,5 @@ def StandardizeData(dataframe):
     return dataframe
 
 
-df = pd.read_csv("xanes_data.csv")  # TM xanes data
+df = pd.read_csv("xanes.csv")  # TM xanes data
 standardized_df = StandardizeData(InterpolateAndResample(df))
