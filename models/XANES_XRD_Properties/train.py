@@ -110,7 +110,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dataset = MyDataset(TMElements_info, NotTMElements_info, padded_ySpec, targets)
     train_loader, val_loader, test_loader = dataset_random_split(".", dataset, train_size=0.7, val_size=0.15, test_size=0.15, new_split=False)
-    model = MyNet().to(device)
+    model = MyNet(num_classes=1).to(device)
     optimizer = torch.optim.Adam(model.parameters(), 0.001)
     train_model(model, train_loader, val_loader, test_loader, torch.nn.L1Loss(), optimizer, 100, target_name)  # regression: torch.nn.L1Loss(), classification: torch.nn.CrossEntropyLoss()
     

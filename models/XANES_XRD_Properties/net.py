@@ -176,10 +176,10 @@ class AttentionAggregator(nn.Module):
             return attn_out
 
 class FinalRegressor(nn.Module):
-    def __init__(self, in_dim=64, hidden_dim=64):
+    def __init__(self, in_dim=64, hidden_dim=64, out_dim=1):
         super(FinalRegressor, self).__init__()
         self.fc1 = nn.Linear(in_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, 1)
+        self.fc2 = nn.Linear(hidden_dim, out_dim)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -187,13 +187,13 @@ class FinalRegressor(nn.Module):
         return x
     
 class MyNet(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes):
         super(MyNet, self).__init__()
         self.xanes_extractor = MultiScaleXANESExtractor(in_channels=1, out_dim=32)
         self.elem_proc = ElementsFeatureProcessor()
         self.tm_fuser = FuseTMandXANES(xanes_dim=32, tm_info_dim=24, out_dim=64)
         self.attention = AttentionAggregator(embed_dim=64, n_heads=4)
-        self.regressor = FinalRegressor(in_dim=64, hidden_dim=64)
+        self.regressor = FinalRegressor(in_dim=64, hidden_dim=64, out_dim=num_classes)
         
     def forward(self, TM_spec, TM_spec_mask, TM_info, TM_mask, NotTM_info, NotTM_mask, return_attn_weights=False):
         TM_xanes_feat = self.xanes_extractor(TM_spec, TM_spec_mask)
