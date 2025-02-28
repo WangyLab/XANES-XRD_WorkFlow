@@ -94,7 +94,7 @@ def train_model(model, train_loader, val_loader, test_loader, criterion, optimiz
 
 if __name__ == '__main__':
     '''
-    Regression: 'E_Formation', 'efermi', 'Density', 'BandGap' (control bandgap>0.5).
+    Regression: 'E_Formation', 'efermi', 'Density', 'BandGap' (control bandgap>0).
     Classification: 'BandGap' (conductor: bandgap=0, non-conductor: bandgap>0), 'isGapDirect', 'isMagnetic', 'Ordering'.
     In the classification task, the first three are two-category classification, and the last one is four-catefory.
     
