@@ -1,6 +1,6 @@
-from models.Other_models.AlkalineEarthMetals.data_loader import load_and_filter_data, preprocess_data, MyDataset
-from models.Other_models.AlkalineEarthMetals.dataset_random_split import dataset_random_split
-from models.Other_models.AlkalineEarthMetals.net import MyNet
+from data_loader import load_and_filter_data, preprocess_data, MyDataset
+from dataset_random_split import dataset_random_split
+from net import MyNet
 from tqdm import tqdm
 import math
 import torch
@@ -94,7 +94,7 @@ def train_model(model, train_loader, val_loader, test_loader, criterion, optimiz
 
 if __name__ == '__main__':
     '''
-    Regression: 'E_Formation', 'efermi', 'Density', 'BandGap' (control bandgap>0.5).
+    Regression: 'E_Formation', 'efermi', 'Density', 'BandGap' (control bandgap>0).
     Classification: 'BandGap' (conductor: bandgap=0, non-conductor: bandgap>0), 'isGapDirect', 'isMagnetic', 'Ordering'.
     In the classification task, the first three are two-category classification, and the last one is four-catefory.
     
