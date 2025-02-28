@@ -24,15 +24,6 @@ def load_and_filter_data(data_path):
     return filtered_df2
 
 def preprocess_data(filtered_df, target_name):
-    """
-    Preprocess the data to extract XANES, element information, and padding.
-
-    Args:
-        filtered_df (pd.DataFrame): Filtered DataFrame.
-
-    Returns:
-        tuple: Preprocessed data including all elements, XANES, and targets.
-    """
     XANES_list = []
     Elements_list_all = []
 
