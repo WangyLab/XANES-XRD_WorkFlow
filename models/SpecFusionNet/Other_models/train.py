@@ -1,6 +1,6 @@
-from data_loader import load_and_filter_data, preprocess_data, MyDataset
+from models.SpecFusionNet.Other_models.data_loader_AlkalineEarthMetal import load_and_filter_data, preprocess_data, MyDataset
 from dataset_random_split import dataset_random_split
-from net import MyNet
+from models.SpecFusionNet.Other_models.net_AlkalineEarthMetal import MyNet
 from tqdm import tqdm
 import math
 import torch
