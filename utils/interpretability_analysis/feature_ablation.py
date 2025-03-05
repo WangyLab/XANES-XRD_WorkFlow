@@ -1,6 +1,6 @@
-from models.XANES_XRD_Properties.data_loader import load_and_filter_data, preprocess_data, MyDataset
-from models.XANES_XRD_Properties.dataset_random_split import dataset_random_split
-from models.XANES_XRD_Properties.net import MyNet
+from models.SpecFusionNet.TransitionMetals.data_loader import load_and_filter_data, preprocess_data, MyDataset
+from models.SpecFusionNet.TransitionMetals.dataset_random_split import dataset_random_split
+from models.SpecFusionNet.TransitionMetals.net import MyNet
 import torch
 import torch.nn as nn
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
@@ -55,7 +55,7 @@ def feature_dim_ablation(model, test_loader, which="TM"):
         with torch.no_grad():
             new_out = model(ySpec_copy, ySpec_mask, TM_copy, TM_mask, NotTM_copy, NotTM_mask).squeeze()
         new_mae = mean_squared_error(targets.cpu(), new_out.cpu())
-        print(f"Feature dim {d} masked => RMSE {new_mae:.4f}, Δ={new_mae-base_mae:.4f}")
+        print(f"Feature dim {d} masked => new_mae {new_mae:.4f}, Δ={new_mae-base_mae:.4f}")
 
 
 if __name__ == '__main__':
@@ -68,6 +68,6 @@ if __name__ == '__main__':
     model = MyNet().to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     criterion = nn.L1Loss()
-    checkpoint_path = "checkpoints/XANES_XRD/formation.pth"
+    checkpoint_path = "checkpoints\SpecFusionNet\TM\Ef.pth"
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
     feature_dim_ablation(model, test_loader, which="NotTM")  # or "TM"

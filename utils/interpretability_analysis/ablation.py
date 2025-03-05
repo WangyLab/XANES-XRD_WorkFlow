@@ -1,6 +1,6 @@
-from models.XANES_XRD_Properties.data_loader import load_and_filter_data, preprocess_data, MyDataset
-from models.XANES_XRD_Properties.dataset_random_split import dataset_random_split
-from models.XANES_XRD_Properties.net import MyNet
+from models.SpecFusionNet.TransitionMetals.data_loader import load_and_filter_data, preprocess_data, MyDataset
+from models.SpecFusionNet.TransitionMetals.dataset_random_split import dataset_random_split
+from models.SpecFusionNet.TransitionMetals.net import MyNet
 import torch
 import numpy as np
 import torch.nn as nn
@@ -8,8 +8,8 @@ from tqdm import tqdm
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import math
         
-def mask_module_inference(model, test_loader, mask_xanes=False, mask_tm=False, mask_nottm=False):            
-    model.load_state_dict(torch.load("checkpoints/XANES_XRD/formation.pth"))
+def mask_module_inference(model, test_loader, mask_xanes=False, mask_nottm=False):            
+    model.load_state_dict(torch.load("checkpoints\SpecFusionNet\TM\Ef.pth"))
     model.eval()
     test_preds = []
     test_targets = []
@@ -20,8 +20,8 @@ def mask_module_inference(model, test_loader, mask_xanes=False, mask_tm=False, m
             
             if mask_xanes:
                 ySpec = torch.zeros_like(ySpec).to(device)
-            if mask_tm:
                 TMElements = torch.zeros_like(TMElements).to(device)
+                
             if mask_nottm:
                 NotTMElements = torch.zeros_like(NotTMElements).to(device)
             
@@ -41,22 +41,17 @@ def evaluate_module_importance(model, test_loader):
     """
     Ablation experiments were performed on the three modules respectively.
     """
-    
     # 1) Baseline with all modules enabled
-    base_rmse, base_mae, base_r2 = mask_module_inference(model, test_loader, False, False, False)
+    base_rmse, base_mae, base_r2 = mask_module_inference(model, test_loader, False, False)
     print(f"[Baseline] RMSE={base_rmse:.4f}, MAE={base_mae:.4f}, R2={base_r2:.4f}")
 
-    # 2) Mask XANES module
-    rx, mx, r2x = mask_module_inference(model, test_loader, True, False, False)
-    print(f"[Mask XANES] RMSE={rx:.4f}, MAE={mx:.4f}, R2={r2x:.4f}")
+    # 2) Mask TM Fused module
+    rx, mx, r2x = mask_module_inference(model, test_loader, True, False)
+    print(f"[Mask TM] RMSE={rx:.4f}, MAE={mx:.4f}, R2={r2x:.4f}")
 
-    # 3) Mask TMElements module
-    rt, mt, r2t = mask_module_inference(model, test_loader, False, True, False)
-    print(f"[Mask TMInfo] RMSE={rt:.4f}, MAE={mt:.4f}, R2={r2t:.4f}")
-
-    # 4) Mask NotTMElements module
-    rn, mn, r2n = mask_module_inference(model, test_loader, False, False, True)
-    print(f"[Mask NotTMInfo] RMSE={rn:.4f}, MAE={mn:.4f}, R2={r2n:.4f}")
+    # 4) Mask Non-TM Fused module
+    rn, mn, r2n = mask_module_inference(model, test_loader, False, True)
+    print(f"[Mask NonTM] RMSE={rn:.4f}, MAE={mn:.4f}, R2={r2n:.4f}")
 
 if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

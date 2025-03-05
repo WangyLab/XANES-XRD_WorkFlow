@@ -1,6 +1,6 @@
-from models.XANES_XRD_Properties.data_loader import load_and_filter_data, preprocess_data, MyDataset
-from models.XANES_XRD_Properties.dataset_random_split import dataset_random_split
-from models.XANES_XRD_Properties.net import MyNet
+from models.SpecFusionNet.TransitionMetals.data_loader import load_and_filter_data, preprocess_data, MyDataset
+from models.SpecFusionNet.TransitionMetals.dataset_random_split import dataset_random_split
+from models.SpecFusionNet.TransitionMetals.net import MyNet
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -21,7 +21,7 @@ class GradCamHook:
 def register_gradcam_hooks(layer):
     hook_obj = GradCamHook()
     fwd_handle = layer.register_forward_hook(hook_obj.forward_hook)
-    bwd_handle = layer.register_full_backward_hook(hook_obj.backward_hook)
+    bwd_handle = layer.register_backward_hook(hook_obj.backward_hook)
     return hook_obj, fwd_handle, bwd_handle
 
 
@@ -82,12 +82,12 @@ def gradcam_demo(model, test_loader, a):
     (ySpec, TMElements, NotTMElements, targets, 
      ySpec_mask, TMElements_mask, NotTMElements_mask) = batch
 
-    single_ySpec = ySpec[a].to(device)
-    single_ySpec_mask = ySpec_mask[a].to(device)
-    single_TMElements = TMElements[a].to(device)
-    single_TMElements_mask = TMElements_mask[a].to(device)
-    single_NotTMElements = NotTMElements[a].to(device)
-    single_NotTMElements_mask = NotTMElements_mask[a].to(device)
+    single_ySpec = ySpec[a:a+1].to(device)
+    single_ySpec_mask = ySpec_mask[a:a+1].to(device)
+    single_TMElements = TMElements[a:a+1].to(device)
+    single_TMElements_mask = TMElements_mask[a:a+1].to(device)
+    single_NotTMElements = NotTMElements[a:a+1].to(device)
+    single_NotTMElements_mask = NotTMElements_mask[a:a+1].to(device)
 
     target_layer = model.xanes_extractor.branch1_conv2
     
