@@ -7,16 +7,22 @@ from net import MyNet
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Input: an unknown material's XANES spectra (origin)
 
 def InterpolateAndResample(csv_file):
     df = pd.read_csv(csv_file)
     x0 = df['omega'].min()
-    x1 = x0 + 56
-    x_new = np.linspace(x0, x1, num=200, endpoint=True)
-    f = interp1d(df['omega'], df['mu'], kind='cubic', fill_value='extrapolate')
-    y_new = f(x_new)
-    new_df = pd.DataFrame({'omega': x_new, 'mu': y_new})
+    if df['omega'].max() >= 56:
+        x1 = x0 + 56
+        x_new = np.linspace(x0, x1, num=200, endpoint=True)
+        f = interp1d(df['omega'], df['mu'], kind='cubic', fill_value='extrapolate')
+        y_new = f(x_new)
+        new_df = pd.DataFrame({'omega': x_new, 'mu': y_new})
+    else:
+        x1 = df['omega'].max()
+        x_new = np.linspace(x0, x1, num=200, endpoint=True)
+        f = interp1d(df['omega'], df['mu'], kind='cubic', fill_value='extrapolate')
+        y_new = f(x_new)
+        new_df = pd.DataFrame({'omega': x_new,'mu': y_new})
     return new_df
 
 
@@ -90,7 +96,7 @@ def Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list):
 def PredictClassification_BandGap(XANES_list, TM_elements_list, NotTM_elements_list):
     XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
     model = MyNet(num_classes=2).to(device)
-    ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\isMetal.pth"
+    ckp_path = "checkpoints/SpecFusionNet/TM/isMetal.pth"
     model.load_state_dict(torch.load(ckp_path, map_location=device))
     model.eval()
     with torch.no_grad():
@@ -112,7 +118,7 @@ def PredictClassification_BandGap(XANES_list, TM_elements_list, NotTM_elements_l
 def PredictClassification_isMagnetic(XANES_list, TM_elements_list, NotTM_elements_list):
     XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
     model = MyNet(num_classes=2).to(device)
-    ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\isMagnetic.pth"
+    ckp_path = "checkpoints/SpecFusionNet/TM/isMagnetic.pth"
     model.load_state_dict(torch.load(ckp_path, map_location=device))
     model.eval()
     with torch.no_grad():
@@ -135,7 +141,7 @@ def PredictClassification_isGapDirect(XANES_list, TM_elements_list, NotTM_elemen
     if PredictClassification_BandGap(XANES_list, TM_elements_list, NotTM_elements_list) == 'Yes':
         XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
         model = MyNet(num_classes=2).to(device)
-        ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\isGapDirect.pth"
+        ckp_path = "checkpoints/SpecFusionNet/TM/isGapDirect.pth"
         model.load_state_dict(torch.load(ckp_path, map_location=device))
         model.eval()
         with torch.no_grad():
@@ -158,7 +164,7 @@ def PredictClassification_MagneticOrder(XANES_list, TM_elements_list, NotTM_elem
     if PredictClassification_isMagnetic(XANES_list, TM_elements_list, NotTM_elements_list) == 'Yes':
         XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
         model = MyNet(num_classes=3).to(device)
-        ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\MagneticOrder.pth"
+        ckp_path = "checkpoints/SpecFusionNet/TM/MagneticOrder.pth"
         model.load_state_dict(torch.load(ckp_path, map_location=device))
         model.eval()
         with torch.no_grad():
@@ -181,7 +187,7 @@ def PredictRegression(XANES_list, TM_elements_list, NotTM_elements_list):
     XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
     model = MyNet(num_classes=1).to(device)
     
-    ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\Ef.pth"
+    ckp_path = "checkpoints/SpecFusionNet/TM/Ef.pth"
     model.load_state_dict(torch.load(ckp_path, map_location=device))
     model.eval()
     with torch.no_grad():
@@ -192,7 +198,7 @@ def PredictRegression(XANES_list, TM_elements_list, NotTM_elements_list):
             return_attn_weights=True
         )
     
-    ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\Efermi.pth"
+    ckp_path = "checkpoints/SpecFusionNet/TM/Efermi.pth"
     model.load_state_dict(torch.load(ckp_path, map_location=device))
     model.eval()
     with torch.no_grad():
@@ -203,7 +209,7 @@ def PredictRegression(XANES_list, TM_elements_list, NotTM_elements_list):
             return_attn_weights=True
         )
     
-    ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\density.pth"
+    ckp_path = "checkpoints/SpecFusionNet/TM/density.pth"
     model.load_state_dict(torch.load(ckp_path, map_location=device))
     model.eval()
     with torch.no_grad():
@@ -219,7 +225,7 @@ def PredictRegression_BandGap(XANES_list, TM_elements_list, NotTM_elements_list)
     if PredictClassification_BandGap(XANES_list, TM_elements_list, NotTM_elements_list) == 'Yes':
         XANES_tensor, TM_embedding_tensor, Non_TM_embedding_tensor, XANES_mask, TM_embedding_mask, Non_TM_embedding_mask = Preprocessing(XANES_list, TM_elements_list, NotTM_elements_list)
         model = MyNet(num_classes=1).to(device)
-        ckp_path = "C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\SpecFusionNet\\TM\\Eg.pth"
+        ckp_path = "checkpoints/SpecFusionNet/TM/Eg.pth"
         model.load_state_dict(torch.load(ckp_path, map_location=device))
         model.eval()
         with torch.no_grad():
@@ -249,7 +255,7 @@ def Predict_TM_CNs(XANES_list, TM_elements_list):
     
     if len(TM_elements_list) == 1:
         model = Spec2CN_States(out_dim=3)
-        model.load_state_dict(torch.load(f"C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\CNs\\{TM_elements_list[0]}.pth"))
+        model.load_state_dict(torch.load(f"checkpoints/CNs/{TM_elements_list[0]}.pth"))
         model.eval()
         outputs = model(torch.tensor(XANES_list[0]))
         predicted_indices = torch.max(outputs, 0)[1].item()
@@ -261,7 +267,7 @@ def Predict_TM_CNs(XANES_list, TM_elements_list):
         CNs_list = []
         for i in range(len(TM_elements_list)):
             model = Spec2CN_States(out_dim=3)
-            model.load_state_dict(torch.load(f"C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\CNs\\{TM_elements_list[i]}.pth"))
+            model.load_state_dict(torch.load(f"checkpoints/CNs/{TM_elements_list[i]}.pth"))
             model.eval()
             outputs = model(torch.tensor(XANES_list[i]))
             predicted_indices = torch.max(outputs, 0)[1].item()
@@ -294,7 +300,7 @@ def Predict_Oxistates(XANES_list, TM_elements_list, Non_TM_elements_list):
     for i in range(len(TM_elements_list)):
         if TM_elements_list[i] in element_classes:
             model = Spec2CN_States(out_dim=len(element_classes[TM_elements_list[i]]))
-            model.load_state_dict(torch.load(f"C:\\Users\\wangy\\Desktop\\XANES课题\\git_code\\checkpoints\\OxidationStates\\{TM_elements_list[i]}.pth"))
+            model.load_state_dict(torch.load(f"checkpoints/OxidationStates/{TM_elements_list[i]}.pth"))
             model.eval()
             outputs = model(torch.tensor(XANES_list[i]))
             predicted_indices = torch.max(outputs, 0)[1].item()
@@ -314,11 +320,12 @@ def Predict_Oxistates(XANES_list, TM_elements_list, Non_TM_elements_list):
 
 
 if __name__ == '__main__':
-    # input area
+    
+    # input area: You need to prepare XANES raw data
     TM_elements = ['Cu', 'Zn']
     Non_TM_elements = ['Sn', 'S']
-    csv_file_Cu = "C:\\Users\\wangy\\Desktop\\FEFF_test_inp\\Zn2Cu4Sn2S8_mp_1025500-ok\\data1.csv"
-    csv_file_Zn = "C:\\Users\\wangy\\Desktop\\FEFF_test_inp\\Zn2Cu4Sn2S8_mp_1025500-ok\\data2.csv"
+    csv_file_Cu = "data_Cu.csv"
+    csv_file_Zn = "data_Zn.csv"
     
     # preprocessing area
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
