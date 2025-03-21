@@ -19,24 +19,24 @@ The XANES-XRD Integrated Machine Learning Workflow is a high-throughput workflow
 ## Project Structure
 ```
 XANES-XRD_WorkFlow/
-├─ checkpoints
+├─ checkpoints  # Model checkpoints
 │  ├─ CNs
 │  ├─ CrystalSystem
 │  ├─ OxidationStates
 │  └─ SpecFusionNet
 ├─ models
-│  ├─ OxidationStates_CNs
+│  ├─ OxidationStates_CNs  # MLP
 │  ├─ SpecFusionNet
-│  └─ Xrd2CrystalSystem
+│  └─ Xrd2CrystalSystem  # Hybrid CNN-Transformer
 ├─ README.md
 ├─ utils
-│  ├─ interpretability_analysis
-│  └─ proprecessing
+│  ├─ interpretability_analysis  # Ablation Experiments & Grad-CAM
+│  └─ proprecessing  # Preprocessing scripts for XANES and PXRD data
 └─ workflow
    ├─ multi-target_property_prediction.py
    ├─ net.py
    ├─ structure_inference.py
-   └─ ZnCu2SnS4
+   └─ ZnCu2SnS4  # Folder containing XANES data of ZnCu2SnS4
 ```
 
 ## Environment Dependencies
