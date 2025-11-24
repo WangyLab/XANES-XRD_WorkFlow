@@ -1,4 +1,4 @@
-# XANES-XRD Integrated Machine Learning: A High-throughput Workflow for Inorganic Material Screening and Structure Inference
+# Spectroscopy-Informed XANES–PXRD Framework for Multi-Property Prediction and Structure Inference
 
 ## Project Description
 The XANES-XRD Integrated Machine Learning Workflow is a high-throughput workflow for inorganic material screening and structure inference. This project combines X-ray Absorption Near Edge Structure (XANES) spectroscopy analysis and Powder X-ray Diffraction (PXRD) data processing, using machine learning methods to achieve efficient material analysis and prediction.
