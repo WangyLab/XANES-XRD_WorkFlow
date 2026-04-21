@@ -114,13 +114,17 @@ Prepare one CSV file per transition-metal absorption edge. Example data are incl
 - `workflow/ZnCu2SnS4/data1.csv`
 - `workflow/ZnCu2SnS4/data2.csv`
 
+In this quickstart, we use **ZnCu2SnS4** as a consistent example material.
+
 ### Step 2. Edit the XANES inference script
-Open `workflow/multi-target_property_prediction.py` and edit the variables in the `if __name__ == '__main__':` block:
+Open `workflow/multi-target_property_prediction.py` and edit the variables in the `if __name__ == '__main__':` block.
+
+For example, if you use the Cu K-edge spectrum of ZnCu2SnS4:
 
 ```python
-TM_elements = ['Co']
-Non_TM_elements = ['O']
-csv_file_Cu = "path/to/your/spectrum.csv"
+TM_elements = ['Cu']
+Non_TM_elements = ['Zn', 'Sn', 'S']
+csv_file_Cu = "workflow/ZnCu2SnS4/data1.csv"
 csv_files = [csv_file_Cu]
 ```
 
@@ -146,6 +150,13 @@ This script prints predicted:
 - transition-metal oxidation states
 - non-transition-metal oxidation states
 
+For the ZnCu2SnS4 example, record the predicted values for:
+- `Cu` oxidation state
+- `Cu` coordination number
+- the oxidation states of `Zn`, `Sn`, and `S`
+
+These values will be used in the structure-inference step.
+
 ### Step 4. Prepare structure-inference inputs
 The structure-inference script requires:
 - a crystal-system label such as `Cubic` or `Orthorhombic`
@@ -154,18 +165,24 @@ The structure-inference script requires:
 - transition-metal coordination number
 - a valid Materials Project API key
 
-### Step 5. Edit the structure inference script
-Open `workflow/structure_inference.py` and update the `if __name__ == '__main__':` block.
+For the same ZnCu2SnS4 example, the element list should remain consistent:
+- `elements = ['Zn', 'Cu', 'Sn', 'S']`
+- `TM_element = 'Cu'`
 
-Example fields to update:
+### Step 5. Edit the structure inference script
+Open `workflow/structure_inference.py` and update the `if __name__ == '__main__':` block using the descriptors from Step 3.
+
+Example template:
 
 ```python
 API_KEY = "your api key"
-oxistates = [2, 3, 3, -2]
-elements = ['Ca', 'Mn', 'Al', 'O']
-TM_element = 'Mn'
-TM_CN = 6
+oxistates = [Zn_state, Cu_state, Sn_state, S_state]
+elements = ['Zn', 'Cu', 'Sn', 'S']
+TM_element = 'Cu'
+TM_CN = Cu_CN
 ```
+
+Replace `Zn_state`, `Cu_state`, `Sn_state`, `S_state`, and `Cu_CN` with the actual outputs predicted in Step 3.
 
 Also update:
 - the crystal system passed into `StrucTempleSearch(...)`
